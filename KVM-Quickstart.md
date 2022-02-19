@@ -33,7 +33,7 @@ manage.py run_gunicorn -c conf/gunicorn.conf.py
 
 websockify 0.0.0.0:6080 127.0.0.1:5900
 
-# Manually Configure VM profiles (could be useful in some case)
+# Manually Configure VM profiles (occasionally useful)
 cd /etc/libvirt/qemu/
 
 vi your-vm-name.xml
