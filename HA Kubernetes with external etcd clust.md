@@ -470,7 +470,7 @@ Download Prometheus, Alertmanager, exporter you need from
 
     https://prometheus.io/download/
 
-Get Kube-state-metrics (This is NOT Metrics-server!)
+Get Kube-state-metrics (NOT Metrics-server!)
 
     https://github.com/kubernetes/kube-state-metrics/tree/master/examples/standard
 
@@ -673,14 +673,14 @@ Enjoy
 			$IMAGE_ID \
 			/usr/sbin/init
 
-Due to macvlan's design, container is unable to connect host through original ip (vice versa), we can create a dummy dev and assign another ip for host.
+Due to macvlan's design,the container is unable to connect hostmachine through original ip (vice versa), we can create a dummy dev and assign another ip for host.
 
     ip link add dummy link enp5s0 type macvlan mode bridge
     ip addr add 192.168.0.254/32 dev dummy
     ip link set dummy up
     ip route add 192.168.0.84/32 dev dummy
 
-Now the host machine is able to communicate with the container via dummy ip address. 
+Now we can connect the container and host machine via dummy ip address. 
 
 ### Fast reload kubernetes/manifest, cni configs, regenerate routing rules (for broken networking on some node)
 
@@ -851,9 +851,8 @@ Kubernetes waits for a specified time called the termination grace period. By de
 
 ### Change etcd peer listen address
 
-***NEITHER 'ETCD_LISTEN_PEER_URLS' IN etcd.conf , NOR  CMDLINES IN [OFFICIAL DOC](https://etcd.io/docs/v3.3/op-guide/runtime-configuration) WORKS. THEY WON'T DO ANY SHIT.*** 
 
-> ~~etcdctl member update xxxxxx --peer-urls=http://10.0.1.10:2380~~
+> ~~etcdctl member update xxxxxx --peer-urls=http://10.0.1.10:2380 (THIS COMMAND FROM OFFICIAL DOCUMENT SEEMS OUT-DATED.)~~
 
 Use following command:
 
