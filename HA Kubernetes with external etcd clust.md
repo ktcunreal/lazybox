@@ -230,28 +230,12 @@ Reboot
 2. docker pull registry.aliyuncs.com/google_containers/img:tag
 3. docker tag registry.aliyuncs.com/google_containers/img:tag k8s.gcr.io/img:tag
 
-### Start kubelet
+### Get kubeadm default config
 
-1. Check kubelet exec cgroup-driver argument(/usr/lib/systemd/system/kubelet.service) 
-2. `kubeadm init phase kubelet-start`
+1. `kubeadm config print init-defaults > kubeadm-config.yaml`
 
-### Generate certificates
-
-1. `kubeadm init phase certs all --control-plane-endpoint "192.168.0.203:6443" --apiserver-cert-extra-sans "ip_01,ip_02,ip_03,domain_01,domain_02,domain_03"` 
-
-- (or `'kubeadm init phase certs all --config kubeadm-config.yaml'`)
-
-### Generate kubeconfig & control-plane manifests
-1. `kubeadm init phase kubeconfig all --control-plane-endpoint "192.168.0.203:6443"`
-2. `kubeadm init phase control-plane all --control-plane-endpoint "192.168.0.203:6443"`
-
-### Upload config & certs
-1. `kubeadm init phase upload-config all`
-
-    - kubectl -n kube-system get cm kubeadm-config
-
-    - Edit kubeadm-config.yaml
-
+ 2. Edit kubeadm-config.yaml
+ 
         ```
            apiServer:
            certSANs:
@@ -269,19 +253,17 @@ Reboot
             caFile: /etc/kubernetes/pki/etcd/ca.crt
             certFile: /etc/kubernetes/pki/apiserver-etcd-client.crt
             keyFile: /etc/kubernetes/pki/apiserver-etcd-client.key
+	    kind: ClusterConfiguration
+	    networking:
+                 podSubnet: 192.168.0.0/24
+		 
         ```
+	
+	kubeadm init --config kubeadm.yaml
 
-2. `kubeadm init phase upload-certs --upload-certs --config kubeadm-config.yaml`
+	> kubectl -n kube-system get cm kubeadm-config (To check config stored in configmap when cluster was set)
 
-    **(Save returned certificate-key string for later use)**
-
-### Updates kubelet settings
-- (Optional) kubeadm init phase mark-control-plane; 
-- (Optional) kubeadm init phase bootstrap-token
-- (Optional)kubectl taint nodes centos-01 node-role.kubernetes.io/master=:NoSchedule
-- `kubeadm init phase kubelet-finalize all`
-
- ### Deploy cni plugin, coredns, kubeproxy
+### Deploy cni plugin, coredns, kubeproxy
 1. Get flannel or calico.yaml from official link
 - https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
 - https://docs.projectcalico.org/manifests/calico.yaml
