@@ -237,25 +237,29 @@ Reboot
  2. Edit kubeadm-config.yaml
  
         ```
-           apiServer:
+         apiServer:
            certSANs:
            - "192.168.0.201"
            - "127.0.0.1"
            - "centos-01"
-          - "localhost"
+           - "localhost"
          controlPlaneEndpoint: 192.168.0.203:6443
            etcd:
             external:
                endpoints:
               - http://192.168.0.201:2379
               - http://192.168.0.202:2379
-             - http://192.168.0.203:2379
+              - http://192.168.0.203:2379
             caFile: /etc/kubernetes/pki/etcd/ca.crt
             certFile: /etc/kubernetes/pki/apiserver-etcd-client.crt
             keyFile: /etc/kubernetes/pki/apiserver-etcd-client.key
+	    imageRepository: registry.aliyuncs.com/google_containers
 	    kind: ClusterConfiguration
+	    kubernetesVersion: 1.23.6
 	    networking:
-                 podSubnet: 192.168.0.0/24
+                 dnsDomain: cluster.local
+                 podSubnet: 10.244.0.0/16
+                 serviceSubnet: 10.96.0.0/12
 		 
         ```
 	
