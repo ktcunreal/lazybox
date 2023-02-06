@@ -1,3 +1,5 @@
+# THIS DOCUMENT IS OUTDATED, INSTRUCTIONS DOWN HERE MAY NOT WORK AS EXPECTED
+
 # Kubernetes Ops Practice
 
 # 1. Build HA Kubernetes cluster with external etcd 
