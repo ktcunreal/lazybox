@@ -1,0 +1,9 @@
+- id: webhook
+  execute-command: C:\Windows\System32\wscript.exe
+  command-working-directory: C:\Users\LXB\Desktop\webhook
+  # response-message: 
+  pass-arguments-to-command:
+  - source: url
+    name: script
+  - source: url
+    name: project

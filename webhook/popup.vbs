@@ -1,0 +1,1 @@
+msgbox "Job <" + WScript.Arguments(0) + "> finished",4096,"Jenkins"

@@ -1,0 +1,284 @@
+<head>
+
+<style type="text/css">
+.top {
+    display: block;
+    //width: 25%;
+    border-bottom: 2px solid;
+}
+
+</style>
+</head>
+<body>
+
+<div class="top">
+
+</div>
+
+<div class="echarts desktop" id="echarts"></div>
+<script src="./jquery-1.9.1.min.js"></script>
+
+  <script src="./echarts-tree.js"></script>
+  <script type="text/javascript">
+  
+  
+  //转rgb
+colorToRgb = function (color) {
+    var div = document.createElement('div');
+    div.style.backgroundColor = color;
+    document.body.appendChild(div);
+    var c = window.getComputedStyle(div).backgroundColor;
+    document.body.removeChild(div);
+    return c;
+};
+function popIframe(src, target) {
+
+        //新窗口打开
+        window.open(src);
+
+} //end popIframe
+
+//textcolor
+function autoTextColor(color) {
+    var rgb = colorToRgb(color);
+    var RgbValueArry = rgb.replace("rgb(", "").replace(")", "").split(",");
+    var $grayLevel = RgbValueArry[0] * 0.299 + RgbValueArry[1] * 0.587 + RgbValueArry[2] * 0.114;
+    if ($grayLevel >= 192) {
+        return "#333";
+    } else {
+        return "#fff";
+    }
+}
+  $(document).ready(function(){
+          themecolor = $(".left .logo").first().css("color") || "#333333";
+          function setData(themecolor) {
+          echarts.dispose($('#echarts')[0]);
+          $('#echarts').width($('#echarts').parent().width());
+          $('#echarts').height($(window).height()-$('#echarts').prev('.insearch').stop(true,true).outerHeight(true));
+          myChart = echarts.init($('#echarts')[0]);
+          option = {
+              series: [{
+                  type: "tree",
+                  data: [{
+                      name: "LOG",
+                      children: [ 
+                        {
+                          name: "test",
+                          isShow:false,
+                          value: "", 
+                          children: [
+                          
+                            {
+                            name: "cbps",
+                            value: "http://logtail.lexiangbao.cn/cbps",
+                            },
+                          
+                            {
+                            name: "cbbs",
+                            value: "http://logtail.lexiangbao.cn/cbbs",
+                            },
+                          
+                            {
+                            name: "gateway",
+                            value: "http://logtail.lexiangbao.cn/gateway",
+                            },
+                          
+                            {
+                            name: "gold",
+                            value: "http://logtail.lexiangbao.cn/gold",
+                            },
+                          
+                            {
+                            name: "gold-facade",
+                            value: "http://logtail.lexiangbao.cn/gold-facade",
+                            },
+                          
+                            {
+                            name: "infra",
+                            value: "http://logtail.lexiangbao.cn/infra",
+                            },
+                          
+                            {
+                            name: "mtms",
+                            value: "http://logtail.lexiangbao.cn/mtms",
+                            },
+                          
+                            ]
+                          },
+
+                        {
+                          name: "qa1",
+                          isShow:false,
+                          value: "", 
+                          children: [
+                          
+                            {
+                            name: "cbps",
+                            value: "http://logtail.lexiangbao.cn/qa1-cbps",
+                            },
+                          
+                            {
+                            name: "cbbs",
+                            value: "http://logtail.lexiangbao.cn/qa1-cbbs",
+                            },
+                          
+                            {
+                            name: "gateway",
+                            value: "http://logtail.lexiangbao.cn/qa1-gateway",
+                            },
+                          
+                            {
+                            name: "gold",
+                            value: "http://logtail.lexiangbao.cn/qa1-gold",
+                            },
+                          
+                            {
+                            name: "gold-facade",
+                            value: "http://logtail.lexiangbao.cn/qa1-gold-facade",
+                            },
+                          
+                            {
+                            name: "infra",
+                            value: "http://logtail.lexiangbao.cn/qa1-infra",
+                            },
+                          
+                            {
+                            name: "mtms",
+                            value: "http://logtail.lexiangbao.cn/qa1-mtms",
+                            },
+                          
+                            ]
+                          },
+                        
+                        {
+                          name: "qa2",
+                          isShow:false,
+                          value: "", 
+                          children: [
+                          
+                            {
+                            name: "cbps",
+                            value: "http://logtail.lexiangbao.cn/qa2-cbps",
+                            },
+                          
+                            {
+                            name: "cbbs",
+                            value: "http://logtail.lexiangbao.cn/qa2-cbbs",
+                            },
+                          
+                            {
+                            name: "gateway",
+                            value: "http://logtail.lexiangbao.cn/qa2-gateway",
+                            },
+                          
+                            {
+                            name: "gold",
+                            value: "http://logtail.lexiangbao.cn/qa2-gold",
+                            },
+                          
+                            {
+                            name: "gold-facade",
+                            value: "http://logtail.lexiangbao.cn/qa2-gold-facade",
+                            },
+                          
+                            {
+                            name: "infra",
+                            value: "http://logtail.lexiangbao.cn/qa2-infra",
+                            },
+                          
+                            {
+                            name: "mtms",
+                            value: "http://logtail.lexiangbao.cn/qa2-mtms",
+                            },
+                          
+                            ]
+                          },
+                      ]
+                  }],
+
+                  itemStyle: { //设置属性
+                     normal: {
+                          color:themecolor || "#333333",
+                          borderWidth: 0
+                      }
+                  },
+                  label: { //内容位置等属性
+                     normal: {
+                          verticalAlign: 'middle',
+                          align: 'center',
+                          fontSize: parseFloat($("html").css('font-size'))*0.85,
+                          color: autoTextColor(themecolor) || "#ffffff"
+                      }
+                  },
+                  lineStyle: { //连线颜色
+                      normal: {
+                          color: themecolor || 'rgba(0,0,0,0.25)',
+                          width: 0.5,
+                          curveness: 0.75
+                      }
+                  },
+                  leaves: {
+                      label: {
+                          show: true
+                      }
+                  },
+                  top: "-15%",
+                  left: "2%",
+                  bottom: 100,
+                  right: "2%",
+                  symbolSize: parseFloat($("html").css('font-size'))*6.8,
+                  animationDuration: 0,
+                  animationDurationUpdate:0,
+                  orient: "vertical",
+                  symbol: "circle",
+                  expandAndCollapse: true,
+                  initialTreeDepth: 2,
+              }]
+          };//end option
+
+          if($("body").width()<768){
+            option.series[0].symbolSize=36;
+            option.series[0].label.normal.fontSize=12;
+          }
+  
+          if($("body").height()<600){
+            option.series[0].top="-50%";
+            option.series[0].bottom=40;
+            option.series[0].expandAndCollapse=false
+          }else{
+            option.series[0].data[0].children[0].isShow = true;
+          }
+
+          myChart.setOption(option);
+          //window.onresize = myChart.resize();
+
+          //点击事件
+          myChart.on('click', function(params) {
+              //console.log(params);
+              //alert(params.data.children)
+              if (params.data.children && option.series[0].expandAndCollapse) { //有子节点
+                //return true;
+              } else {
+                if(/.jpg|.jpeg|.gif|.png|.bmp|.pic/.test(params.data.value.substring(params.data.value.lastIndexOf('.')).toLowerCase())){
+                  popImg(params.data.value);
+                }else{
+                  popIframe(params.data.value,'_blank');
+                }
+              }
+          })
+          //end 点击事件
+		  $("body").removeClass("loading").addClass("loaded");
+          }//end setDate
+		  
+		   if($("body").width() >= 768){
+		    setData(themecolor);
+		  }
+
+          $(window).resize(function(){
+              themecolor = $(".left .logo").first().css("color") || "#333333";
+              setData(themecolor);
+             });
+          }) 
+  </script>
+  
+</body>

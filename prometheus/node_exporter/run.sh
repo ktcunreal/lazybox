@@ -1,0 +1,1 @@
+nohup ./node_exporter --web.listen-address='127.0.0.1:9100' "--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|run)($|/)" >/dev/null 2>&1 &

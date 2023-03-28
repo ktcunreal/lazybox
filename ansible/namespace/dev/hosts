@@ -1,0 +1,9 @@
+[parent_demo:children]
+child_1_demo
+child_2_demo
+
+[child_1_demo]
+127.0.0.1 ansible_ssh_host=127.0.0.1 ansible_user=root ansible_ssh_pass=127.0.0.1
+
+[child_2_demo]
+127.0.0.1 ansible_ssh_host=127.0.0.1 ansible_ssh_user='root' ansible_ssh_private_key_file="/demo/.ssh/id_rsa" ansible_ssh_port=22 ansible_ssh_host_key_checking=no

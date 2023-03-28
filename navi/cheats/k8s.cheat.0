@@ -1,0 +1,54 @@
+% kubernetes, k8s
+
+# 查看集群证书
+kubeadm alpha certs check-expiration
+
+# 更新集群证书
+kubeadm alpha certs renew all
+
+# 查看<POD>信息
+kubectl get pod -o wide --watch
+
+# 进入指定<POD> 
+kubectl exec -it <pod_id> bash
+
+# 重启指定<POD>
+kubectl delete pod <pod_id>
+
+# 查看<POD>日志
+kubectl logs -f <pod_id>
+
+# 查看<节点>信息 
+kubectl get nodes -o wide
+
+# 查看<PV>信息
+kubectl get pv,pvc -o wide
+
+# 查看<服务>信息
+kubectl get svc -o wide
+
+# 查看<DEPLOYMENT>信息
+kubectl get deployment -o wide
+
+# 导出<DEPLOYMENT>信息
+kubectl get deployment <deploy_id> -o yaml
+
+# 查看<POD>元数据
+kubectl describe pod <pod_id> 
+
+# 杀死指定<节点>上所有容器
+kubectl drain <node_id>
+
+# 将<节点>标记为不可用 (关机维护)
+kubectl cordon <node_id>
+
+# 将<节点>标记为可用
+kubectl uncordon <node_id>
+
+# 旧镜像清理
+~/navi/custom/clean-all.sh
+
+
+$ deploy_id: kubectl get deployment --- --headers 1 --column 1
+$ node_id: kubectl get nodes --- --headers 1 --column 1
+$ pod_id: kubectl get pods --- --headers 1 --column 1 

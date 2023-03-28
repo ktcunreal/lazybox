@@ -1,0 +1,13 @@
+[{
+    "id": "test",
+    "execute-command": "/root/webhook/scripts/test-notify-mail.sh",
+    "command-working-directory": "/root/webhook",
+    "pass-arguments-to-command":
+    [{
+        "source": "url",
+        "name": "test_case"
+    },{
+    	"source": "url",
+	"name": "test_status"
+    }]
+}]

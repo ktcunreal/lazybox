@@ -1,0 +1,140 @@
+groups:
+- name: node 
+  rules:
+  - alert: HostOutOfMemory
+    expr: node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes * 100 < 10
+    for: 2m
+    labels:
+      severity: Critical
+    annotations:
+      summary: "Instance: {{ $labels.instance }}; Value: {{ $value }}"
+      description: "Host is running out of memory (< 10% left)"
+
+  - alert: HostUnusualNetworkThroughputIn
+    expr: sum by (instance) (rate(node_network_receive_bytes_total[2m])) / 1024 / 1024 > 100
+    for: 5m
+    labels:
+      severity: Warning
+    annotations:
+      summary: "Instance: {{ $labels.instance }}; Value: {{ $value }}"
+      description: "Host network interfaces are probably receiving too much data (> 100 MB/s)"
+
+  - alert: HostUnusualNetworkThroughputOut
+    expr: sum by (instance) (rate(node_network_transmit_bytes_total[2m])) / 1024 / 1024 > 100
+    for: 5m
+    labels:
+      severity: Warning
+    annotations:
+      summary: "Instance: {{ $labels.instance }}; Value: {{ $value }}"
+      description: "Host network interfaces are probably sending too much data (> 100 MB/s)"
+
+  - alert: HostUnusualDiskReadRate
+    expr: sum by (instance) (rate(node_disk_read_bytes_total[2m])) / 1024 / 1024 > 50
+    for: 5m
+    labels:
+      severity: Warning
+    annotations:
+      summary: "Instance: {{ $labels.instance }}; Value: {{ $value }}"
+      description: "Disk is probably reading too much data (> 50 MB/s)"
+
+  - alert: HostUnusualDiskWriteRate
+    expr: sum by (instance) (rate(node_disk_written_bytes_total[2m])) / 1024 / 1024 > 50
+    for: 2m
+    labels:
+      severity: Warning
+    annotations:
+      summary: "Instance: {{ $labels.instance }}; Value: {{ $value }}"
+      description: "Disk is probably writing too much data (> 50 MB/s)"
+
+  # Please add ignored mountpoints in node_exporter parameters like
+  # "--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|run)($|/)".
+  # Same rule using "node_filesystem_free_bytes" will fire when disk fills for non-root users.
+  - alert: HostOutOfDiskSpace
+    expr: (node_filesystem_avail_bytes * 100) / node_filesystem_size_bytes < 15 and ON (instance, device, mountpoint) node_filesystem_readonly == 0
+    for: 2m
+    labels:
+      severity: Critical
+    annotations:
+      summary: "Instance: {{ $labels.instance }}; Value: {{ $value }}"
+      description: "Disk is running out of space (< 15% left)"
+
+  - alert: HostOutOfInodes
+    expr: node_filesystem_files_free{mountpoint ="/rootfs"} / node_filesystem_files{mountpoint="/rootfs"} * 100 < 15 and ON (instance, device, mountpoint) node_filesystem_readonly{mountpoint="/rootfs"} == 0
+    for: 2m
+    labels:
+      severity: Critical
+    annotations:
+      summary: "Instance: {{ $labels.instance }}; Value: {{ $value }}"
+      description: "Disk is running out of available inodes (< 15% left)"
+
+  - alert: HostUnusualDiskReadLatency
+    expr: rate(node_disk_read_time_seconds_total[1m]) / rate(node_disk_reads_completed_total[1m]) > 0.1 and rate(node_disk_reads_completed_total[1m]) > 0
+    for: 5m
+    labels:
+      severity: Warning
+    annotations:
+      summary: "Instance: {{ $labels.instance }}; Value: {{ $value }}"
+      description: "Disk read latency is unusual (read operations > 100ms)"
+
+  - alert: HostUnusualDiskWriteLatency
+    expr: rate(node_disk_write_time_seconds_total[1m]) / rate(node_disk_writes_completed_total[1m]) > 0.1 and rate(node_disk_writes_completed_total[1m]) > 0
+    for: 5m
+    labels:
+      severity: Warning
+    annotations:
+      summary: "Instance: {{ $labels.instance }}; Value: {{ $value }}"
+      description: "Disk write latency is unusual (write operations > 100ms)"
+
+  - alert: HostHighCpuLoad
+    expr: 100 - (avg by(job) (rate(node_cpu_seconds_total{mode="idle"}[2m])) * 100) > 85
+    for: 30s
+    labels:
+      severity: Warning
+    annotations:
+      summary: "Instance: {{ $labels.instance }}; Value: {{ $value }}"
+      description: "CPU load is > 80%"
+
+  - alert: HostSwapIsFillingUp
+    expr: (1 - (node_memory_SwapFree_bytes / node_memory_SwapTotal_bytes)) * 100 > 90
+    for: 5m
+    labels:
+      severity: Warning
+    annotations:
+      summary: "Instance: {{ $labels.instance }}; Value: {{ $value }}"
+      description: "Host Swap is filling up (>90%)"
+
+  - alert: HostSystemdServiceCrashed
+    expr: node_systemd_unit_state{state="failed"} == 1
+    for: 0m
+    labels:
+      severity: Critical
+    annotations:
+      summary: "Instance: {{ $labels.instance }}; Value: {{ $value }}"
+      description: "Target systemd service has crashed"
+
+  - alert: HostOomKillDetected
+    expr: increase(node_vmstat_oom_kill[1m]) > 0
+    for: 0m
+    labels:
+      severity: Critical
+    annotations:
+      summary: "Instance: {{ $labels.instance }}; Value: {{ $value }}" 
+      description: "Target OOM kill detected"
+
+  - alert: HostNetworkInterfaceSaturated
+    expr: (rate(node_network_receive_bytes_total{device!~"^tap.*"}[1m]) + rate(node_network_transmit_bytes_total{device!~"^tap.*"}[1m])) / node_network_speed_bytes{device!~"^tap.*"} > 0.8 < 10000
+    for: 1m
+    labels:
+      severity: Warning
+    annotations:
+      summary: "Instance: {{ $labels.instance }}; Value: {{ $value }}"
+      description: "The network interface \"{{ $labels.device }}\" on \"{{ $labels.instance }}\" is getting overloaded."
+
+  - alert: HostClockSkew
+    expr: (node_timex_offset_seconds > 0.09 and deriv(node_timex_offset_seconds[5m]) >= 0) or (node_timex_offset_seconds < -0.09 and deriv(node_timex_offset_seconds[5m]) <= 0)
+    for: 2m
+    labels:
+      severity: Critical
+    annotations:
+      summary: "Instance: {{ $labels.instance }}; Value: {{ $value }}"
+      description: "Clock skew detected. Clock is out of sync. Ensure NTP is configured correctly on this host."

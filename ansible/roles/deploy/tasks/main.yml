@@ -1,0 +1,26 @@
+- name: Create project directory
+  file: 
+    state=directory 
+    mode=0755 
+    path=/data/tmp/{{ FOO }}
+  tags: deploy
+
+- name: Upload yml
+  template: 
+    src=test.yml                  
+    dest=/data/tmp/{{ FOO }}/deployment.yml
+  tags: deploy
+
+- name: Copy file with owner and permissions
+  copy:
+    src: test.file
+    dest: /data/tmp/{{ FOO }}/test.file
+    owner: tomcat
+    group: tomcat
+    mode: 0644
+  tags: deploy
+
+- name: deploy
+  shell: /usr/bin/kubectl apply -f /data/tmp/deployment.yaml
+  tags:
+  - deploy

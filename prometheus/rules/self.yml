@@ -1,0 +1,20 @@
+groups:
+- name: prometheus 
+  rules:
+  - alert: PrometheusTargetMissing
+    expr: up == 0
+    for: 5m 
+    labels:
+      severity: Critical
+    annotations:
+      summary: "Instance: {{ $labels.instance }}; Value: {{ $value }}"
+      description: "A Prometheus target has disappeared. An exporter might be crashed."
+
+  - alert: PrometheusTargetScrapingSlow
+    expr: prometheus_target_interval_length_seconds{quantile="0.9"} > 95
+    for: 5m
+    labels:
+      severity: Warning
+    annotations:
+      summary: "Instance: {{ $labels.instance }}; Value: {{ $value }}"
+      description: "Prometheus is scraping exporters slowly"

@@ -1,0 +1,18 @@
+[ssh-iptables]
+enabled = true
+filter = sshd
+action = iptables[name=SSH, port=22, protocol=tcp]
+#sendmail-whois[name=SSH, dest=your@email.com, sender=fail2ban@email.com]
+logpath = /var/log/secure
+maxretry = 3
+bantime = 300
+
+[nginx]
+enabled = true
+filter = nginx-custom
+action = iptables[name=nginx, port=80, protocol=tcp]
+#sendmail-whois[name=SSH, dest=your@email.com, sender=fail2ban@email.com]
+logpath = /var/log/nginx/error.log
+maxretry = 5
+bantime = 120
+

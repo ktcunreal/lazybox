@@ -1,0 +1,2 @@
+curlftpfs -o codepage=utf-8 ftp://username:password@ip /mntpath
+# if there's a "@"symbol in password, replace it with "%40"

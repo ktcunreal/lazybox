@@ -1,0 +1,97 @@
+% [Kubernetes] Node导航 
+
+# 列出集群中所有节点
+kubectl get nodes -o wide
+
+# Label Node role
+kubectl label node <node> node-role.kubernetes.io/<name>=
+
+# 查看节点详细信息
+kubectl describe node <node>
+
+# 恢复指定节点的调度工作(用于停机维护完成后)
+kubectl uncordon <workernode>
+
+# 驱逐指定工作节点上的Pod(用于停机维护前)
+kubectl drain <node> --delete-emptydir-data --ignore-daemonsets
+
+# 生成token并打印加入新成员的指令(有效期只有1天,过期请重新生成)
+kubeadm token create --print-join-command
+
+# 查看指定节点上的所有pod
+kubectl get pods -A -o wide --field-selector spec.nodeName=<workernode>
+
+$ node: kubectl get node | tail -n+2 --- --column 1
+$ workernode: kubectl get node | grep worker --- --column 1
+
+# 更新内部DNS
+kubectl edit cm coredns -n kube-system && kubectl rollout restart -n kube-system deployment/coredns
+
+% [Kubernetes] Pod 导航
+
+# 查看指定Pod的标准输出日志(stdout)
+kubectl logs -n <namespace> -f <pod>
+
+# 列出集群中节点硬件资源使用情况
+kubectl top node
+
+# 列出所有Pod资源占用情况
+kubectl top pod -n <namespace>
+
+# 重启一个应用(删除指定Pod, 此操作非零宕机滚动更新, 请谨慎操作)
+kubectl delete -n <namespace> po <pod>
+
+# 查看指定Pod详细信息
+kubectl describe -n <namespace> pod <pod>
+
+# 进入指定Pod容器(log, 低延迟)
+kubectl -n <namespace> exec -it <pod> -- bash
+
+# 列出当前集群中所有Pod(watch)
+watch -n1 kubectl get pods -o wide
+
+# 列出当前集群中所有Pod
+kubectl get pods -n <namespace> -o wide
+
+$ namespace: kubectl get ns | grep -v kube | tail -n+2 | awk '{print $1}' --- --column 1
+$ pod: kubectl get pod -n <namespace> | tail -n+2 --- --column 1
+
+% [Kubernetes] 其他功能
+
+# 列出当前集群中虚拟服务
+kubectl get svc -n <namespace> -o wide
+
+# 删除指定Deployment
+kubectl delete -n <namespace> deploy <dp>
+
+# 无缝重启应用(耗时较长)
+kubectl rollout restart -n <namespace> deploy <dp>
+
+# 列出所有应用在CNI中的实际访问地址
+kubectl get ep -n <namespace> -o wide
+
+# 列出所有pv,pvc状态(持久化储存卷)
+kubectl get pv,pvc -o wide
+
+# 查看集群内部事件日志
+kubectl get ev
+
+# 查看指定Deployment yaml文件
+kubectl get -n <namespace> deployment <dp> -o yaml
+
+# 查看Kubernetes集群证书过期时间
+kubeadm certs check-expiration
+
+# 更新证书
+kubeadm certs renew all
+
+# 清理工作节点旧镜像 (clean worker)
+ansible k8sworkers -m shell -a "/usr/local/bin/k8sutil.sh clean-images"
+
+# 清理jenkins旧镜像
+ssh root@localhost /usr/bin/clean
+
+# 清理旧RS(不常用,一般直接删除deployment即可)
+kubectl get rs -n <namespace> | egrep '0         0         0' | awk '{print $1}' | xargs kubectl delete rs
+
+$ namespace: kubectl get ns | grep -v kube | tail -n+2 | awk '{print $1}' --- --column 1

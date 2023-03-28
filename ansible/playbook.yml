@@ -1,0 +1,5 @@
+- name: playbook main stage
+  hosts: parent_demo
+  remote_user: root
+  roles:
+  - deploy

@@ -1,0 +1,23 @@
+groups:
+  - name: nginx-access-unusual
+    rules:
+      - alert: access-unusual
+        expr: |
+          count by (IP)
+            (count_over_time({job="nginx-access"} | pattern "<IP> <REGION> - - [<TIME>] <msg> <UA>"[5m])) > 200
+        for: 4m
+        labels:
+            severity: warn
+        annotations:
+            summary: Too many request(200+) from a single IP within 5 min.
+  - name: nginx-access-unusual-daily
+    rules:
+      - alert: access-unusual-daily
+        expr: |
+          count by (IP)
+            (count_over_time({job="nginx-access"} | pattern "<IP> <REGION> - - [<TIME>] <msg> <UA>"[24h])) > 1000
+        for: 23h
+        labels:
+            severity: warn
+        annotations:
+            summary: Too many request(1000+) from a single IP within 24 hours.
