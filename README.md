@@ -1,4 +1,4 @@
-# Lazybox - Operations handbook
+# Lazybox - IaC / DevOps handbook
 
 
 Guides from this repository are based on working experience, personal practice,  Google. Some contents are severely outdated. 
