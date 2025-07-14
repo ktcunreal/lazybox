@@ -1,0 +1,13 @@
+kind: IPPool
+metadata:
+  name: default-ipv4-ippool
+spec:
+  allowedUses:
+  - Workload
+  - Tunnel
+  blockSize: 26
+  cidr: 10.244.0.0/16
+  ipipMode: CrossSubnet
+  natOutgoing: true
+  nodeSelector: all()
+  vxlanMode: Never
