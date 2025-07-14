@@ -1,0 +1,32 @@
+apiVersion: projectcalico.org/v3
+kind: Node
+metadata:
+  annotations:
+    projectcalico.org/kube-labels: '{"beta.kubernetes.io/arch":"amd64","beta.kubernetes.io/os":"linux","kubernetes.io/arch":"amd64","kubernetes.io/hostname":"carloha-ng-k8smaster01","kubernetes.io/os":"linux","node-role.kubernetes.io/control-plane":"","node-role.kubernetes.io/master":"","node.kubernetes.io/exclude-from-external-load-balancers":""}'
+  labels:
+    beta.kubernetes.io/arch: amd64
+    beta.kubernetes.io/os: linux
+    kubernetes.io/arch: amd64
+    kubernetes.io/hostname: carloha-ng-k8smaster01
+    kubernetes.io/os: linux
+    node-role.kubernetes.io/control-plane: ""
+    node-role.kubernetes.io/master: ""
+    node.kubernetes.io/exclude-from-external-load-balancers: ""
+    route-reflector: "true"
+  name: carloha-ng-k8smaster01
+spec:
+  addresses:
+  - address: 172.31.8.111/20
+    type: CalicoNodeIP
+  - address: 172.31.8.111
+    type: InternalIP
+  bgp:
+    ipv4Address: 172.31.8.111/20
+    ipv4IPIPTunnelAddr: 10.244.121.64
+    routeReflectorClusterID: 172.31.8.111
+  orchRefs:
+  - nodeName: carloha-ng-k8smaster01
+    orchestrator: k8s
+status:
+  podCIDRs:
+  - 10.244.1.0/24
