@@ -1,0 +1,55 @@
+auth_enabled: false
+
+server:
+  http_listen_port: 3100
+
+common:
+  path_prefix: /root/prometheus-suite/loki
+  storage:
+    filesystem:
+      chunks_directory: /root/prometheus-suite/loki/chunks
+      rules_directory: /root/prometheus-suite/loki/rules
+  replication_factor: 1
+  ring:
+    instance_addr: 127.0.0.1
+    kvstore:
+      store: inmemory
+
+schema_config:
+  configs:
+    - from: 2020-10-24
+      store: boltdb-shipper
+      object_store: filesystem
+      schema: v11
+      index:
+        prefix: index_
+        period: 24h
+
+limits_config:
+  per_stream_rate_limit: 256M
+  per_stream_rate_limit_burst: 256M
+  ingestion_burst_size_mb: 256
+  ingestion_rate_mb: 256
+  ingestion_rate_strategy: local
+  retention_period: 504h
+  reject_old_samples: false
+  reject_old_samples_max_age: 48h
+
+chunk_store_config:
+  max_look_back_period: 504h
+
+table_manager:
+  retention_deletes_enabled: true
+  retention_period: 504h
+
+
+ruler:
+        #  storage:
+        #    type: local
+        #    local:
+        #      directory: /root/prometheus-suite/loki/rules
+        #  alertmanager_url: http://localhost:9093
+  ring:
+    kvstore:
+      store: inmemory
+  enable_api: true
